@@ -1,5 +1,13 @@
 require_dependency 'repositories_helper'
 
+module RepositoriesHelper
+  def limit_exceeded
+    @project.respond_to?(:repositories) &&
+    ScmConfig['max_repos'] && ScmConfig['max_repos'].to_i > 0 &&
+    @project.repositories.select{ |r| r.created_with_scm }.size >= ScmConfig['max_repos'].to_i
+  end
+end
+
 module ScmRepositoriesHelperPatch
 
     def self.included(base)
@@ -202,13 +210,6 @@ module ScmRepositoriesHelperPatch
                 end
             end
             scm_path_info_tag_without_external(repository)
-        end
-
-    private
-
-        def limit_exceeded
-            ScmConfig['max_repos'] && ScmConfig['max_repos'].to_i > 0 &&
-            @project.repositories.select{ |r| r.created_with_scm }.size >= ScmConfig['max_repos'].to_i
         end
 
     end
