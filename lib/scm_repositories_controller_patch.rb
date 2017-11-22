@@ -24,7 +24,7 @@ module ScmRepositoriesControllerPatch
             end
         end
 
-        # Original function
+        # Original function in redmine 3.3
         #def create
         #    attrs = pickup_extra_info
         #    @repository = Repository.factory(params[:repository_scm])
@@ -40,6 +40,16 @@ module ScmRepositoriesControllerPatch
         #    end
         #end
 
+        # Original function in redmine 3.4
+        # def create
+        #    if @repository.save
+        #        redirect_to settings_project_path(@project, :tab => 'repositories')
+        #    else
+        #        render :action => 'new'
+        #    end
+
+        # compatible with redmine 3.4.
+        # TODO: compatibility with < 3.4
         def create_with_scm
             interface = SCMCreator.interface(params[:repository_scm])
 
@@ -47,24 +57,25 @@ module ScmRepositoriesControllerPatch
               ((params[:operation].present? && params[:operation] == 'add') || ScmConfig['only_creator'])) ||
                !ScmConfig['allow_add_local']
 
-                attrs = pickup_extra_info
-
-                if params[:operation].present? && params[:operation] == 'add'
-                    attrs[:attrs] = interface.sanitize(attrs[:attrs])
-                end
-
-                @repository = Repository.factory(params[:repository_scm])
-                @repository.safe_attributes = params[:repository]
-                if attrs[:attrs_extra].keys.any?
-                    @repository.merge_extra_info(attrs[:attrs_extra])
-                end
-
-                @repository.project = @project
+#                attrs = pickup_extra_info
+#
+#                if params[:operation].present? && params[:operation] == 'add'
+#                    attrs[:attrs] = interface.sanitize(attrs[:attrs])
+#                end
+#
+#                @repository = Repository.factory(params[:repository_scm])
+#                @repository.safe_attributes = params[:repository]
+#                if attrs[:attrs_extra].keys.any?
+#                    @repository.merge_extra_info(attrs[:attrs_extra])
+#                end
+#
+#                @repository.project = @project
 
                 if @repository.valid? && params[:operation].present? && params[:operation] == 'add'
                     if !ScmConfig['max_repos'] || ScmConfig['max_repos'].to_i == 0 ||
                        @project.repositories.select{ |r| r.created_with_scm }.size < ScmConfig['max_repos'].to_i
-                        scm_create_repository(@repository, interface, attrs[:attrs]['url'])
+#                       scm_create_repository(@repository, interface, attrs[:attrs]['url'])
+                        scm_create_repository(@repository, interface, params[:repository]['url'])
                     else
                         @repository.errors.add(:base, :scm_repositories_maximum_count_exceeded, :max => ScmConfig['max_repos'].to_i)
                     end
@@ -73,7 +84,8 @@ module ScmRepositoriesControllerPatch
                 if ScmConfig['only_creator'] && request.post? && @repository.errors.empty? && !@repository.created_with_scm
                     @repository.errors.add(:base, :scm_only_creator)
                 elsif !ScmConfig['allow_add_local'] && request.post? && @repository.errors.empty? && !@repository.created_with_scm &&
-                    attrs[:attrs]['url'] =~ %r{\A(file://|([a-z]:)?\.*[\\/])}i
+#                   attrs[:attrs]['url'] =~ %r{\A(file://|([a-z]:)?\.*[\\/])}i
+                    params[:repository]['url'] =~ %r{\A(file://|([a-z]:)?\.*[\\/])}i
                     @repository.errors.add(:base, :scm_local_repositories_denied)
                 end
 
