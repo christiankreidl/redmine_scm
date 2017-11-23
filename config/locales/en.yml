@@ -1,5 +1,6 @@
 en:
   button_create_new_repository: Create new repository
+  text_button_does_not_create_repository: ATTENTION! This button doesn't create new repository, just adds existing one. Use 'Create new repository' button to create and add new repository.
 
   label_repository_url: Repository URL
   label_repository_format: repository
