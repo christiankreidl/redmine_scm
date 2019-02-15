@@ -6,6 +6,7 @@ module ScmRepositoriesControllerPatch
         base.class_eval do
             prepend InstanceMethods
             unloadable
+            before_action :delete_scm, :only => :destroy
         end
     end
 
