@@ -3,15 +3,10 @@ require_dependency 'repositories_controller'
 module ScmRepositoriesControllerPatch
 
     def self.included(base)
-        base.send(:include, InstanceMethods)
         base.class_eval do
+            prepend InstanceMethods
             unloadable
-            before_filter :delete_scm, :only => :destroy
-
-            alias_method_chain :destroy, :confirmation
-
-            alias_method_chain :create, :scm
-            alias_method_chain :update, :scm
+            before_action :delete_scm, :only => :destroy
         end
     end
 
@@ -50,7 +45,7 @@ module ScmRepositoriesControllerPatch
 
         # compatible with redmine 3.4.
         # TODO: compatibility with < 3.4
-        def create_with_scm
+        def create
             interface = SCMCreator.interface(params[:repository_scm])
 
             if (interface && (interface < SCMCreator) && interface.enabled? &&
@@ -96,12 +91,12 @@ module ScmRepositoriesControllerPatch
                 end
 
             else
-                create_without_scm
+                super
             end
         end
 
-        def update_with_scm
-            update_without_scm
+        def update
+            super
 
             if @repository.is_a?(Repository::Github) && # special case for Github
                params[:repository][:extra_register_hook] == '1' && !@repository.extra_hook_registered
@@ -109,17 +104,17 @@ module ScmRepositoriesControllerPatch
             end
         end
 
-        def destroy_with_confirmation
+        def destroy
             if @repository.created_with_scm
                 if params[:confirm]
                     unless params[:confirm_with_scm]
                         @repository.created_with_scm = false
                     end
 
-                    destroy_without_confirmation
+                    super
                 end
             else
-                destroy_without_confirmation
+                super
             end
         end
 

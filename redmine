@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+COMPOSE="docker-compose -f docker-compose.yml"
+TTY="-T"
+
+if [ $# -gt 0 ]; then
+    if [ "$1" == "restart" ]; then
+        docker exec redmine_scm_redmine_1 touch tmp/restart.txt
+    else
+        $COMPOSE "$@"
+    fi
+else
+    $COMPOSE ps
+fi
