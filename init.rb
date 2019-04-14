@@ -5,21 +5,21 @@ begin
 rescue LoadError
 end
 
-require_dependency 'creator/scm_creator'
-require_dependency 'creator/subversion_creator'
-require_dependency 'creator/mercurial_creator'
-require_dependency 'creator/git_creator'
-require_dependency 'creator/bazaar_creator'
-require_dependency 'creator/github_creator'
-
-require_dependency 'scm_config'
-require_dependency 'scm_hook'
-
 Rails.logger.info 'Starting SCM Creator Plugin for Redmine'
 
 Redmine::Scm::Base.add('Github')
 
-Rails.configuration.to_prepare do
+((Rails.version > "5")? ActiveSupport::Reloader : ActionDispatch::Callbacks).to_prepare do
+    require_dependency 'creator/scm_creator'
+    require_dependency 'creator/subversion_creator'
+    require_dependency 'creator/mercurial_creator'
+    require_dependency 'creator/git_creator'
+    require_dependency 'creator/bazaar_creator'
+    require_dependency 'creator/github_creator'
+
+    require_dependency 'scm_config'
+    require_dependency 'scm_hook'
+
     unless Project.included_modules.include?(ScmProjectPatch)
         Project.send(:include, ScmProjectPatch)
     end

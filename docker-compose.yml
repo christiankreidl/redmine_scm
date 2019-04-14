@@ -1,0 +1,28 @@
+version: '3.1'
+
+services:
+  redmine:
+    image: redmine:4-passenger
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - ${REDMINE_PORT}:3000
+    environment:
+      REDMINE_DB_MYSQL: db
+      REDMINE_DB_PASSWORD: example
+    volumes:
+      - .:/usr/src/redmine/plugins/redmine_scm
+
+  db:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_DATABASE: redmine
+    volumes:
+        - mysqldata:/var/lib/mysql
+
+volumes:
+    mysqldata:
+        driver: "local"
