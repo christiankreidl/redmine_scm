@@ -1,9 +1,6 @@
-require_dependency 'redmine/scm/adapters/git_adapter'
+#require_dependency 'redmine/scm/adapters/git_adapter'
 
-module Redmine
-    module Scm
-        module Adapters
-            class GithubAdapter < GitAdapter
+            class GithubAdapter < Redmine::Scm::Adapters::GitAdapter
 
                 def clone
                     cmd_args = %w{clone --mirror}
@@ -38,6 +35,3 @@ module Redmine
                 end
 
             end
-        end
-    end
-end

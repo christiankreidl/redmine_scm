@@ -1,4 +1,4 @@
-require_dependency 'repositories_helper'
+#require_dependency 'repositories_helper'
 
 module RepositoriesHelper
   def limit_exceeded
@@ -25,9 +25,9 @@ module ScmRepositoriesHelperPatch
             button_disabled = repository.class.respond_to?(:scm_available) ? !repository.class.scm_available : false
 
             if ScmConfig['only_creator']
-                interface = SCMCreator.interface(repository)
+                interface = ScmCreator.interface(repository)
 
-                if interface && (interface < SCMCreator) && interface.enabled? && repository.new_record?
+                if interface && (interface < ScmCreator) && interface.enabled? && repository.new_record?
                     button_disabled = true
                 end
             end
@@ -196,7 +196,7 @@ module ScmRepositoriesHelperPatch
 
         def scm_path_info_tag(repository)
             if !repository.new_record? && repository.created_with_scm
-                interface = SCMCreator.interface(repository)
+                interface = ScmCreator.interface(repository)
                 if interface && (url = interface.external_url(repository))
                     return content_tag('em', url, :class => 'info')
                 end

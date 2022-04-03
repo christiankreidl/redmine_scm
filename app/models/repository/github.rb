@@ -1,4 +1,4 @@
-require_dependency File.expand_path('../../../../lib/adapters/github_adapter', __FILE__)
+#require_dependency File.expand_path('../../../../lib/adapters/github_adapter', __FILE__)
 
 class Repository::Github < Repository::Git
     validates_format_of :url, :with => %r{\A(https://github\.com/|git@github\.com:)[a-z0-9\-_]+/[a-z0-9\-_]+\.git\z}i, :allow_blank => true
@@ -15,7 +15,7 @@ class Repository::Github < Repository::Git
     end
 
     def self.scm_adapter_class
-        Redmine::Scm::Adapters::GithubAdapter
+        GithubAdapter
     end
 
     def self.scm_name
