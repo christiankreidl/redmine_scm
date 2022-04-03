@@ -9,29 +9,17 @@ Rails.logger.info 'Starting SCM Creator Plugin for Redmine'
 
 Redmine::Scm::Base.add('Github')
 
-((Rails.version > "5")? ActiveSupport::Reloader : ActionDispatch::Callbacks).to_prepare do
-#    require_dependency 'creator/scm_creator'
-#    require_dependency 'creator/subversion_creator'
-#    require_dependency 'creator/mercurial_creator'
-#    require_dependency 'creator/git_creator'
-#    require_dependency 'creator/bazaar_creator'
-#    require_dependency 'creator/github_creator'
-
-#    require_dependency 'scm_config'
-#    require_dependency 'scm_hook'
-
-    unless Project.included_modules.include?(ScmProjectPatch)
-        Project.send(:include, ScmProjectPatch)
-    end
-    unless Repository.included_modules.include?(ScmRepositoryPatch)
-        Repository.send(:include, ScmRepositoryPatch)
-    end
-    unless RepositoriesHelper.included_modules.include?(ScmRepositoriesHelperPatch)
-        RepositoriesHelper.send(:include, ScmRepositoriesHelperPatch)
-    end
-    unless RepositoriesController.included_modules.include?(ScmRepositoriesControllerPatch)
-        RepositoriesController.send(:include, ScmRepositoriesControllerPatch)
-    end
+unless Project.included_modules.include?(ScmProjectPatch)
+    Project.send(:include, ScmProjectPatch)
+end
+unless Repository.included_modules.include?(ScmRepositoryPatch)
+    Repository.send(:include, ScmRepositoryPatch)
+end
+unless RepositoriesHelper.included_modules.include?(ScmRepositoriesHelperPatch)
+    RepositoriesHelper.send(:include, ScmRepositoriesHelperPatch)
+end
+unless RepositoriesController.included_modules.include?(ScmRepositoriesControllerPatch)
+    RepositoriesController.send(:include, ScmRepositoriesControllerPatch)
 end
 
 Redmine::Plugin.register :redmine_scm do

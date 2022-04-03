@@ -1,5 +1,3 @@
-#require_dependency 'repositories_controller'
-
 module ScmRepositoriesControllerPatch
 
     def self.included(base)

@@ -1,5 +1,3 @@
-#require_dependency 'project'
-
 module ScmProjectPatch
 
     def self.included(base)

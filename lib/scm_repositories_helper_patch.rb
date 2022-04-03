@@ -1,5 +1,3 @@
-#require_dependency 'repositories_helper'
-
 module RepositoriesHelper
   def limit_exceeded
     @project.respond_to?(:repositories) &&
