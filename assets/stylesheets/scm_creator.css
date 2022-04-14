@@ -8,7 +8,7 @@ input#repository_url {
   border: 1px solid #E4E4E4;
   padding: 5px;
   margin: 4px 0 10px;
-  height: 23px;
+  overflow: hidden;
   border-radius: 3px;
 }
 
